@@ -7,11 +7,25 @@ import (
   "github.com/webx-top/echo"
 )
 
+// type of disasters
+const (
+
+)
+
 type Disaster struct {
-  Longitude float32 `json:"longitude"`
-  Altitude float32 `json:"altitude"`
-  Radial float32 `json:"r"`
-  Type string `json:"t"`
+  ID string `json:"Id"`
+  Longitude float64 `json:"Longitude"`
+  Latitude float64 `json:"Lat"`
+  Radius float64 `json:"R"`
+  Type string `json:"T"`
+  Lvl int32 `json:"Lvl"`
+  People int `json:"People"`
+  StartTime int64 `json:"Start_time"`
+  EndTime int64 `json:"End_time"`
+}
+
+func ReportDisaster(d Disaster) string {
+  return d.Type
 }
 
 func GetDisaster(c echo.Context) error {
@@ -20,12 +34,10 @@ func GetDisaster(c echo.Context) error {
   if err := c.Bind(exampleRequest); err != nil {
     return err
   }
-
-
   return c.JSONBlob([]byte(fmt.Sprintf(`{
         "longitude": %q,
         "altitude": %q,
-        "r": "%s",
+        "r": "%q",
         "t": "%s"
-      }`, exampleRequest.Longitude, exampleRequest.Altitude, exampleRequest.Radial, exampleRequest.Type)),http.StatusOK)
+      }`, exampleRequest.Longitude, exampleRequest.Latitude, exampleRequest.Radius, exampleRequest.Type)),http.StatusOK)
 }

@@ -15,17 +15,32 @@ func main() {
 		return c.String("Hello, World!", http.StatusOK)
 	})
 
-  e.Get("/disaster/getall", getAllDisasters)
+	e.Get("/disaster/getall", getAllDisasters)
+	e.Post("/disaster/report", reportDisaster)
 
 	e.Run(standard.New(":1323"))
+}
+
+func reportDisaster(c echo.Context) error {
+	d := disaster.Disaster{}
+	if err := c.Bind(&d); err != nil {
+			return err
+	}
+	return c.String(d.Type, http.StatusOK)
+	/*disasterID := disaster.ReportDisaster(d)
+	if disasterID == "" {
+		return c.String("", http.StatusInternalServerError)
+	} else {
+		return c.String(disasterID, http.StatusOK)
+	}*/
 }
 
 func getAllDisasters(c echo.Context) error {
   d := &disaster.Disaster{
     Longitude: 1,
-    Altitude:1,
-    Radial:1,
-    Type:"fire",
+    Latitude: 1,
+    Radius: 1,
+    Type: "fire",
   }
   b, err := json.Marshal(d)
     if err != nil {

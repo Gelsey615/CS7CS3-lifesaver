@@ -7,15 +7,6 @@ import (
   "db"
 )
 
-// type of disasters
-const (
-  DB = "http://localhost:8080/"
-  Insert = "insert"
-  Merge = "merge"
-  Query = "query"
-	ColDisaster = "disaster"
-)
-
 type Disaster struct {
   Longitude float64 `json:"longitude"`
   Latitude float64 `json:"latitude"`

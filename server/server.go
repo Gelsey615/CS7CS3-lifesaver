@@ -11,13 +11,6 @@ import (
 	"db"
 )
 
-// db connection, collections
-const (
-	DB = "http://localhost:8080/"
-	ColDisaster = "disaster"
-	ColVehicle = "vehicle"
-)
-
 func main() {
 	err := checkDBCollection()
 	if err != nil {
@@ -34,7 +27,7 @@ func main() {
 
 func checkDBCollection() error {
 	// Get all collections in DB
-	resp, err := http.Get(DB+"all")
+	resp, err := http.Get(db.DB+"all")
 	defer resp.Body.Close()
 	if err != nil {
 		fmt.Println("DB Error: get all collections failed, ", err.Error())
@@ -58,7 +51,7 @@ func checkDBCollection() error {
 		cols = strings.Split(string(byteStorage[:n-2]), "\",\"")
 	}
 	// Compare collections
-	collection := []string{ColDisaster, ColVehicle}
+	collection := []string{db.ColDisaster, db.ColVehicle}
 	for _, c := range collection {
 		// create necessary collection
 		if !contain(cols, c) {

@@ -8,7 +8,7 @@ import (
 	"io/ioutil"
 	"bytes"
 	"strings"
-	"net/url"
+	"db"
 )
 
 // db connection, collections
@@ -53,41 +53,26 @@ func checkDBCollection() error {
 	if err.Error() != "EOF" {
 		fmt.Println("DB Error: collection parse err, ", err.Error())
 	}
-  cols := strings.Split(string(byteStorage[:n-2]), "\",\"")
+	cols := []string{}
+	if n > 2 {
+		cols = strings.Split(string(byteStorage[:n-2]), "\",\"")
+	}
 	// Compare collections
 	collection := []string{ColDisaster, ColVehicle}
 	for _, c := range collection {
 		// create necessary collection
 		if !contain(cols, c) {
-			err = createCollection(c)
+			err = db.CreateCollection(c)
 			if err != nil {
 				fmt.Printf("DB Error: create collections %s failed, %s\n", c, err.Error())
 				return err
 			}
-			err = createIndex(c)
+			err = db.CreateIndex(c)
 			if err != nil {
 				fmt.Printf("DB Error: collections %s create index failed, %s\n", c, err.Error())
 				return err
 			}
 		}
-	}
-	return nil
-}
-
-func createCollection(c string) error {
-	fmt.Printf("Creating DB collection %s\n", c)
-	resp, err := http.Get(DB+"create?col="+c)
-	defer resp.Body.Close()
-	return err
-}
-
-func createIndex(c string) error {
-	switch c {
-	case ColDisaster:
-		fmt.Printf("Creating DB collection %s index \"end_time\"\n", c)
-		resp, err := http.PostForm(DB+"index", url.Values{"col": {ColDisaster}, "path": {"end_time"}})
-	  defer resp.Body.Close()
-	  return err
 	}
 	return nil
 }

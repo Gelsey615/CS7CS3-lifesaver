@@ -1,12 +1,10 @@
 package disaster
 
 import (
-  "net/http"
   "encoding/json"
-  "io/ioutil"
-  "net/url"
   "strconv"
   "time"
+  "db"
 )
 
 // type of disasters
@@ -34,46 +32,17 @@ func ReportDisaster(d *Disaster) (string, error) {
   if err != nil {
     return "", err
   }
-  id, err := saveToDB(string(doc))
+  id, err := db.InsertToDB(db.ColDisaster, string(doc))
   return id, err
 }
 
 func FinishDisaster(id string) error {
   now := time.Now()
   sec := now.Unix()
-  return updateToDB(id, "{\"end_time\":"+strconv.FormatInt(sec, 10)+"}")
+  return db.UpdateToDB(db.ColDisaster, id, "{\"end_time\":"+strconv.FormatInt(sec, 10)+"}")
 }
 
 func GetAllDisasters() (string, error) {
-  str, err := getFromDB()
+  str, err := db.GetFromDB(db.ColDisaster, "{\"eq\": 0, \"in\": [\"end_time\"]}")
   return str, err
-}
-
-func saveToDB(doc string) (string, error) {
-  resp, err := http.PostForm(DB+Insert, url.Values{"col": {ColDisaster}, "doc": {doc}})
-  defer resp.Body.Close()
-  if err != nil {
-    return "", err
-  }
-  id, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-    return "", err
-  }
-  return string(id), nil
-}
-
-func updateToDB(id string, doc string) error {
-  resp, err := http.PostForm(DB+Merge, url.Values{"col": {ColDisaster}, "doc": {doc}, "id": {id}})
-  defer resp.Body.Close()
-  return err
-}
-
-func getFromDB() (string, error) {
-  resp, err := http.PostForm(DB+Query, url.Values{"col": {ColDisaster}, "q": {"{\"eq\": 0, \"in\": [\"end_time\"]}"}})
-  defer resp.Body.Close()
-  body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return "", err
-	}
-  return string(body), err
 }

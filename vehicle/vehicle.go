@@ -87,8 +87,26 @@ func RequestRoutePlan(id string) (string, error){
   if err := json.Unmarshal([]byte(doc), &v); err != nil {
     return "", err
   }
+  if v[id].DisasterId == "" {
+    return "", errors.New(fmt.Sprintf("vehicle %s is not dispatched", id))
+  }
 
-  return googleMapAPI.GetRoute(v[id].Latitude, v[id].Longitude, v[id].DesLat, v[id].DesLong)
+  myRoute, err := googleMapAPI.GetRoute(v[id].Latitude, v[id].Longitude, v[id].DesLat, v[id].DesLong)
+  if err != nil {
+    return "", err
+  }
+
+
+  doc, err = db.GetFromDB(db.ColDisaster, v[id].DisasterId)
+  if err != nil {
+    return "", err
+  }
+  var d map[string]db.Disaster
+  if err := json.Unmarshal([]byte(doc), &d); err != nil {
+    return "", err
+  }
+
+  return fmt.Sprintf("{\"req_route\":%s,\"my_route\":%s}", d[v[id].DisasterId].ReqRoute, myRoute), nil
 }
 
 func DispatchVehicle(dispatchInfo map[int]int, disasterId string) error {

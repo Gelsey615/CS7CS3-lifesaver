@@ -46,7 +46,7 @@ func RequestRoutePlan(c echo.Context) error {
   route, err := vehicle.RequestRoutePlan(c.Form("id"))
   if err != nil {
 		fmt.Println(err.Error())
-		return c.String("request route failed", http.StatusInternalServerError)
+		return c.String(fmt.Sprintf("request route failed %s", err.Error()), http.StatusInternalServerError)
 	} else {
 		return c.JSONBlob([]byte(route),http.StatusOK)
 	}

@@ -71,11 +71,11 @@ func UpdateVehicle(id string, lat string, ln string) (string, error) {
   if err != nil {
     return "", err
   }
-  var v db.Vehicle
+  var v map[string]db.Vehicle
   if err := json.Unmarshal([]byte(doc), &v); err != nil {
     return "", err
   }
-  return fmt.Sprintf("{\"des_lat\":%f,\"des_ln\":%f}", v.DesLat, v.DesLong), nil
+  return fmt.Sprintf("{\"des_lat\":%f,\"des_ln\":%f}", v[id].DesLat, v[id].DesLong), nil
 }
 
 func RequestRoutePlan(id string) (string, error){
@@ -83,12 +83,12 @@ func RequestRoutePlan(id string) (string, error){
   if err != nil {
     return "", err
   }
-  var v db.Vehicle
+  var v map[string]db.Vehicle
   if err := json.Unmarshal([]byte(doc), &v); err != nil {
     return "", err
   }
 
-  return googleMapAPI.GetRoute(v.Latitude, v.Longitude, v.DesLat, v.DesLong)
+  return googleMapAPI.GetRoute(v[id].Latitude, v[id].Longitude, v[id].DesLat, v[id].DesLong)
 }
 
 func DispatchVehicle(dispatchInfo map[int]int, disasterId string) error {
@@ -96,7 +96,7 @@ func DispatchVehicle(dispatchInfo map[int]int, disasterId string) error {
   if err != nil {
     return err
   }
-  
+
   var d map[string]db.Disaster
   if err := json.Unmarshal([]byte(doc), &d); err != nil {
     return err

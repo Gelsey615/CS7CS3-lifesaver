@@ -19,6 +19,7 @@ func main() {
 	e := echo.New()
 
 	e.Get("/disaster/getall", GetAllDisasters)
+	e.Get("/disaster/query", QueryDisasterReqVehicles)
 	e.Post("/disaster/report", ReportDisaster)
 	e.Post("/disaster/finish", FinishDisaster)
 

@@ -42,3 +42,14 @@ func GetAllDisasters(c echo.Context) error {
 		return c.JSONBlob([]byte(disasters),http.StatusOK)
 	}
 }
+
+func QueryDisasterReqVehicles(c echo.Context) error {
+  id := c.Form("id")
+  vehicles, err := disaster.QueryDisasterReqVehicles(id)
+  if err != nil {
+		fmt.Println(err.Error())
+		return c.String("get all disasters failed", http.StatusInternalServerError)
+	} else {
+		return c.JSONBlob([]byte(vehicles),http.StatusOK)
+	}
+}

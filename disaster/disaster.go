@@ -35,3 +35,11 @@ func GetAllDisasters() (string, error) {
   str, err := db.QueryDB(db.ColDisaster, "{\"eq\": 0, \"in\": [\"end_time\"]}")
   return str, err
 }
+
+func QueryDisasterReqVehicles(id string) (string, error) {
+  vehicles, err := db.QueryDB(db.ColVehicle, "{\"eq\": \""+ id +"\", \"in\": [\"disaster_id\"]}")
+  if err != nil {
+    return "", err
+  }
+  return string(vehicles), nil
+}

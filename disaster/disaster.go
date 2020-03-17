@@ -34,6 +34,6 @@ func FinishDisaster(id string) error {
 }
 
 func GetAllDisasters() (string, error) {
-  str, err := db.GetFromDB(db.ColDisaster, "{\"eq\": 0, \"in\": [\"end_time\"]}")
+  str, err := db.QueryDB(db.ColDisaster, "{\"eq\": 0, \"in\": [\"end_time\"]}")
   return str, err
 }

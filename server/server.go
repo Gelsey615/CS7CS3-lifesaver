@@ -22,6 +22,10 @@ func main() {
 	e.Post("/disaster/report", ReportDisaster)
 	e.Post("/disaster/finish", FinishDisaster)
 
+	e.Post("/vehicle/register", RegisterNewVehicle)
+	e.Get("/vehicle/query", QueryVehicles)
+	e.Post("/vehicle/update", UpdateVehicle)
+
 	e.Run(standard.New(":1323"))
 }
 

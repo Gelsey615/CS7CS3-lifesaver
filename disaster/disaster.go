@@ -14,6 +14,9 @@ func ReportDisaster(d *db.Disaster) (string, error) {
     return "", err
   }
   d.ReqRoute = route
+  now := time.Now()
+  sec := now.Unix()
+  d.StartTime = sec
   doc, err := json.Marshal(d)
   if err != nil {
     return "", err

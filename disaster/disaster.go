@@ -5,6 +5,7 @@ import (
   "strconv"
   "time"
   "db"
+  "googleMapAPI"
 )
 
 type Disaster struct {
@@ -16,9 +17,17 @@ type Disaster struct {
   People int `json:"people"`
   StartTime int64 `json:"start_time"`
   EndTime int64 `json:"end_time"`
+  AssemblyLn float64 `json:"assembly_ln"`
+  AssemblyLat float64 `json:"assembly_lat"`
+  ReqRoute string `json:"req_route"`
 }
 
 func ReportDisaster(d *Disaster) (string, error) {
+  route, err := googleMapAPI.GetRoute(d.Latitude, d.Longitude, d.AssemblyLat, d.AssemblyLn)
+  if err != nil {
+    return "", err
+  }
+  d.ReqRoute = route
   doc, err := json.Marshal(d)
   if err != nil {
     return "", err

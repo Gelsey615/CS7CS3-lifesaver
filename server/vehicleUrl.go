@@ -40,3 +40,28 @@ func UpdateVehicle(c echo.Context) error {
 		return c.JSONBlob([]byte(info),http.StatusOK)
 	}
 }
+
+func RequestRoutePlan(c echo.Context) error {
+  route, err := vehicle.RequestRoutePlan(c.Form("id"))
+  if err != nil {
+		fmt.Println(err.Error())
+		return c.String("request route failed", http.StatusInternalServerError)
+	} else {
+		return c.JSONBlob([]byte(route),http.StatusOK)
+	}
+}
+
+func DispatchVehicle(c echo.Context) error {
+  info := make(map[int]int)
+  if err := c.MustBind(&info); err != nil {
+		return c.String(err.Error(), http.StatusInternalServerError)
+	}
+
+  err := vehicle.DispatchVehicle(info, c.Form("disaster_id"))
+  if err != nil {
+		fmt.Println(err.Error())
+		return c.String("dispatch vehicle failed", http.StatusInternalServerError)
+	} else {
+		return c.String("fine", http.StatusOK)
+	}
+}

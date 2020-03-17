@@ -25,6 +25,9 @@ func main() {
 	e.Post("/vehicle/register", RegisterNewVehicle)
 	e.Get("/vehicle/query", QueryVehicles)
 	e.Post("/vehicle/update", UpdateVehicle)
+	e.Get("/vehicle/requestrouteplan", RequestRoutePlan)
+	e.Post("/vehicle/dispatch", DispatchVehicle)
+
 
 	e.Run(standard.New(":1323"))
 }

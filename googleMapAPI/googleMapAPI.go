@@ -18,8 +18,8 @@ func GetRoute(originLat float64, originLn float64, desLat float64, desLn float64
 	if err != nil {
     return "", errors.New(fmt.Sprintf("API connection error: %s", err))
 	}
-  fmt.Printf("%f,%f\n", originLat, originLn)
-  fmt.Printf("%f,%f\n", desLat, desLn)
+  fmt.Printf("googleMapAPI origin: %f,%f\n", originLat, originLn)
+  fmt.Printf("googleMapAPI des: %f,%f\n", desLat, desLn)
 	r := &maps.DirectionsRequest{
 		Origin:      fmt.Sprintf("%f,%f", originLat, originLn),
 		Destination: fmt.Sprintf("%f,%f", desLat, desLn),
@@ -33,6 +33,6 @@ func GetRoute(originLat float64, originLn float64, desLat float64, desLn float64
   if err != nil {
     return "", err
   }
-  pretty.Println(string(doc))
+
   return string(doc), nil
 }

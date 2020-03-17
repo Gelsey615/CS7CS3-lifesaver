@@ -92,6 +92,16 @@ func RequestRoutePlan(id string) (string, error){
 }
 
 func DispatchVehicle(dispatchInfo map[int]int, disasterId string) error {
+  doc, err := db.GetFromDB(db.ColDisaster, disasterId)
+  if err != nil {
+    return err
+  }
+  
+  var d map[string]db.Disaster
+  if err := json.Unmarshal([]byte(doc), &d); err != nil {
+    return err
+  }
+
   for typ, num := range dispatchInfo {
     doc, err := db.QueryDB(db.ColVehicle, "{\"eq\": " + strconv.Itoa(typ) + ", \"in\": [\"type\"]}")
     if err != nil {
@@ -101,7 +111,7 @@ func DispatchVehicle(dispatchInfo map[int]int, disasterId string) error {
     if err := json.Unmarshal([]byte(doc), &vehicles); err != nil {
       return err
     }
-    err = selectVehicleForDispatch(vehicles, num, disasterId)
+    err = selectAndDispatchVehicle(vehicles, num, disasterId, d[disasterId].Latitude, d[disasterId].Longitude)
     if err != nil {
       return err
     }
@@ -109,7 +119,7 @@ func DispatchVehicle(dispatchInfo map[int]int, disasterId string) error {
   return nil
 }
 
-func selectVehicleForDispatch(vehicles map[string]db.Vehicle, num int, disasterId string) error {
+func selectAndDispatchVehicle(vehicles map[string]db.Vehicle, num int, disasterId string, lat float64, ln float64) error {
   selectedV := make([]string, 0)
   for vid, v := range vehicles {
     if v.DisasterId == "" {
@@ -120,5 +130,6 @@ func selectVehicleForDispatch(vehicles map[string]db.Vehicle, num int, disasterI
     }
   }
   fmt.Println("disaster: "+disasterId+" selected vehicle: "+strings.Join(selectedV, ","))
-  return db.UpdateToDB(db.ColVehicle, strings.Join(selectedV, ","), "{\"disaster_id\":\""+disasterId+"\"}")
+  queryStr := "{\"disaster_id\":\""+disasterId+"\",\"des_lat\":"+fmt.Sprintf("%f", lat)+",\"des_ln\":"+fmt.Sprintf("%f", ln)+"}"
+  return db.UpdateToDB(db.ColVehicle, strings.Join(selectedV, ","), queryStr)
 }

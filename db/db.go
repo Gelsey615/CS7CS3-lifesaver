@@ -18,6 +18,29 @@ const (
   ColVehicle = "vehicle"
 )
 
+type Vehicle struct {
+  Type int `json:"type"`
+  Longitude float64 `json:"longitude"`
+  Latitude float64 `json:"latitude"`
+  DisasterId string `json:"disaster_id"`
+  DesLong float64 `json:"des_ln"`
+  DesLat float64 `json:"des_lat"`
+}
+
+type Disaster struct {
+  Longitude float64 `json:"longitude"`
+  Latitude float64 `json:"latitude"`
+  Radius float64 `json:"radius"`
+  Type string `json:"type"`
+  Lvl int32 `json:"lvl"`
+  People int `json:"people"`
+  StartTime int64 `json:"start_time"`
+  EndTime int64 `json:"end_time"`
+  AssemblyLn float64 `json:"assembly_ln"`
+  AssemblyLat float64 `json:"assembly_lat"`
+  ReqRoute string `json:"req_route"`
+}
+
 func CreateCollection(c string) error {
 	fmt.Printf("Creating DB collection %s\n", c)
 	resp, err := http.Get(DB+"create?col="+c)

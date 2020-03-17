@@ -2,13 +2,14 @@ package main
 
 import (
   "disaster"
+  "db"
 	"github.com/webx-top/echo"
   "net/http"
   "fmt"
 )
 
 func ReportDisaster(c echo.Context) error {
-	d := new(disaster.Disaster)
+	d := new(db.Disaster)
 	if err := c.MustBind(d); err != nil {
 		return c.String("binding err", http.StatusInternalServerError)
 	}

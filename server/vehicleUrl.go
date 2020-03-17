@@ -2,13 +2,14 @@ package main
 
 import (
   "vehicle"
+  "db"
   "github.com/webx-top/echo"
   "net/http"
   "fmt"
 )
 
 func RegisterNewVehicle(c echo.Context) error {
-  v := new(vehicle.Vehicle)
+  v := new(db.Vehicle)
   if err := c.MustBind(v); err != nil {
 		return c.String("binding err", http.StatusInternalServerError)
 	}

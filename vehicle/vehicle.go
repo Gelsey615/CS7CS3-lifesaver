@@ -18,15 +18,6 @@ const (
   typCount
 )
 
-type Vehicle struct {
-  Type int `json:"type"`
-  Longitude float64 `json:"longitude"`
-  Latitude float64 `json:"latitude"`
-  DisasterId string `json:"disaster_id"`
-  DesLong float64 `json:"des_ln"`
-  DesLat float64 `json:"des_lat"`
-}
-
 func typeCheck(typ int) error {
   if typ >= ambulance && typ < typCount {
     return nil
@@ -34,7 +25,7 @@ func typeCheck(typ int) error {
   return errors.New(fmt.Sprintf("invalid type %i", typ))
 }
 
-func RegisterNewVehicle(v *Vehicle) (string, error) {
+func RegisterNewVehicle(v *db.Vehicle) (string, error) {
   //type check
   err := typeCheck(v.Type)
   if err != nil {
@@ -54,7 +45,7 @@ func QueryVehicles() (string, error){
   if err != nil {
     return "", err
   }
-  var dat map[string]Vehicle
+  var dat map[string]db.Vehicle
   if err := json.Unmarshal([]byte(doc), &dat); err != nil {
     return "", err
   }
@@ -80,7 +71,7 @@ func UpdateVehicle(id string, lat string, ln string) (string, error) {
   if err != nil {
     return "", err
   }
-  var v Vehicle
+  var v db.Vehicle
   if err := json.Unmarshal([]byte(doc), &v); err != nil {
     return "", err
   }
@@ -92,7 +83,7 @@ func RequestRoutePlan(id string) (string, error){
   if err != nil {
     return "", err
   }
-  var v Vehicle
+  var v db.Vehicle
   if err := json.Unmarshal([]byte(doc), &v); err != nil {
     return "", err
   }
@@ -106,7 +97,7 @@ func DispatchVehicle(dispatchInfo map[int]int, disasterId string) error {
     if err != nil {
       return err
     }
-    var vehicles map[string]Vehicle
+    var vehicles map[string]db.Vehicle
     if err := json.Unmarshal([]byte(doc), &vehicles); err != nil {
       return err
     }
@@ -118,7 +109,7 @@ func DispatchVehicle(dispatchInfo map[int]int, disasterId string) error {
   return nil
 }
 
-func selectVehicleForDispatch(vehicles map[string]Vehicle, num int, disasterId string) error {
+func selectVehicleForDispatch(vehicles map[string]db.Vehicle, num int, disasterId string) error {
   selectedV := make([]string, 0)
   for vid, v := range vehicles {
     if v.DisasterId == "" {

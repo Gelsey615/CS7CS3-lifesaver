@@ -14,4 +14,4 @@ How to run
 * go run server/server.go server/disasterUrl.go server/vehicleUrl.go
 
 Testing via Postman
-https://documenter.getpostman.com/view/10316783/SzKYQH7K?version=latest
+https://documenter.getpostman.com/view/10316783/SzS5v7GK

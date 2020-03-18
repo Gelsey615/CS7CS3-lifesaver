@@ -9,7 +9,7 @@ import (
 )
 
 const (
-  DB = "http://localhost:8080/"
+  DB = "http://rdoc.zhaojiajin.club:80/"
   Insert = "insert"
   Merge = "merge"
   Query = "query"

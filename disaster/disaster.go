@@ -6,6 +6,8 @@ import (
   "time"
   "db"
   "googleMapAPI"
+  "fmt"
+  "strings"
 )
 
 func ReportDisaster(d *db.Disaster) (string, error) {
@@ -28,7 +30,25 @@ func ReportDisaster(d *db.Disaster) (string, error) {
 func FinishDisaster(id string) error {
   now := time.Now()
   sec := now.Unix()
-  return db.UpdateToDB(db.ColDisaster, id, "{\"end_time\":"+strconv.FormatInt(sec, 10)+"}")
+  err := db.UpdateToDB(db.ColDisaster, id, "{\"end_time\":"+strconv.FormatInt(sec, 10)+"}")
+  if err != nil {
+    return err
+  }
+
+  doc, err := db.QueryDB(db.ColVehicle, "{\"eq\": \""+ id +"\", \"in\": [\"disaster_id\"]}")
+  if err != nil {
+    return err
+  }
+  var vehicles map[string]db.Vehicle
+  if err := json.Unmarshal([]byte(doc), &vehicles); err != nil {
+    return err
+  }
+  dispatchedV := make([]string, 0)
+  for vid, _ := range vehicles {
+    dispatchedV = append(dispatchedV, vid)
+  }
+  queryStr := "{\"disaster_id\":\"\",\"des_lat\":"+fmt.Sprintf("%f", 0.0)+",\"des_ln\":"+fmt.Sprintf("%f", 0.0)+"}"
+  return db.UpdateToDB(db.ColVehicle, strings.Join(dispatchedV, ","), queryStr)
 }
 
 func GetAllDisasters() (string, error) {

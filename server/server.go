@@ -30,6 +30,8 @@ func main() {
 	e.Get("/vehicle/requestrouteplan", RequestRoutePlan)
 	e.Post("/vehicle/dispatch", DispatchVehicle)
 
+	e.Post("/user/register", RegisterNewUser)
+	e.Post("/user/login", Login)
 
 	e.Run(standard.New(":1323"))
 }
@@ -60,7 +62,7 @@ func checkDBCollection() error {
 		cols = strings.Split(string(byteStorage[:n-2]), "\",\"")
 	}
 	// Compare collections
-	collection := []string{db.ColDisaster, db.ColVehicle}
+	collection := []string{db.ColDisaster, db.ColVehicle, db.ColUser}
 	for _, c := range collection {
 		// create necessary collection
 		if !contain(cols, c) {

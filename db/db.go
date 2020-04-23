@@ -16,6 +16,7 @@ const (
   Get = "get"
 	ColDisaster = "disaster"
   ColVehicle = "vehicle"
+  ColUser = "user"
 )
 
 type Vehicle struct {
@@ -39,6 +40,11 @@ type Disaster struct {
   AssemblyLn float64 `json:"assembly_ln"`
   AssemblyLat float64 `json:"assembly_lat"`
   ReqRoute string `json:"req_route"`
+}
+
+type User struct {
+  Email string `json:"email"`
+  Pwd string `json:"pwd"`
 }
 
 func CreateCollection(c string) error {
@@ -65,6 +71,11 @@ func CreateIndex(c string) error {
     resp2, err := http.PostForm(DB+"index", url.Values{"col": {ColVehicle}, "path": {"type"}})
 	  defer resp2.Body.Close()
     return err
+  case ColUser:
+    fmt.Printf("Creating DB collection %s index \"email\"\n", c)
+    resp, err := http.PostForm(DB+"index", url.Values{"col": {ColUser}, "path": {"email"}})
+	  defer resp.Body.Close()
+	  return err
 	}
 	return nil
 }

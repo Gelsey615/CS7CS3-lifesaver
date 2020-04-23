@@ -21,6 +21,7 @@ func main() {
 	e.Get("/disaster/getall", GetAllDisasters)
 	e.Get("/disaster/query", QueryDisasterReqVehicles)
 	e.Post("/disaster/report", ReportDisaster)
+	e.Post("/disaster/setassemblypoint", SetAssemblyPoint)
 	e.Post("/disaster/finish", FinishDisaster)
 
 	e.Post("/vehicle/register", RegisterNewVehicle)

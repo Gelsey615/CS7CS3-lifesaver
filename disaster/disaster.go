@@ -11,11 +11,6 @@ import (
 )
 
 func ReportDisaster(d *db.Disaster) (string, error) {
-  route, err := googleMapAPI.GetRoute(d.Latitude, d.Longitude, d.AssemblyLat, d.AssemblyLn)
-  if err != nil {
-    return "", err
-  }
-  d.ReqRoute = route
   now := time.Now()
   sec := now.Unix()
   d.StartTime = sec
@@ -25,6 +20,27 @@ func ReportDisaster(d *db.Disaster) (string, error) {
   }
   id, err := db.InsertToDB(db.ColDisaster, string(doc))
   return id, err
+}
+
+func SetAssemblyPoint(id string, assemblyLat float64, assemblyLn float64 ) error {
+  doc, err := db.GetFromDB(db.ColDisaster, id)
+  if err != nil {
+    return err
+  }
+  var d map[string]db.Disaster
+  if err := json.Unmarshal([]byte(doc), &d); err != nil {
+    return err
+  }
+  route, err := googleMapAPI.GetRoute(d[id].Latitude, d[id].Longitude, assemblyLat, assemblyLn)
+  if err != nil {
+    return err
+  }
+  routeStr, err := json.Marshal("\""+route+"\"")
+  if err != nil {
+    return err
+  }
+  updateStr := fmt.Sprintf("{\"req_route\":%s, \"assembly_lat\":%f, \"assembly_ln\":%f}", routeStr, assemblyLat, assemblyLn)
+  return db.UpdateToDB(db.ColDisaster, id, updateStr)
 }
 
 func FinishDisaster(id string) error {

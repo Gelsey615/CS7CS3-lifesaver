@@ -9,9 +9,15 @@ import (
 	"bytes"
 	"strings"
 	"db"
+	"flag"
 )
 
 func main() {
+	port := flag.String("port", "", "server port")
+	flag.Parse()
+	if *port == "" {
+		panic("Please provide port number")
+	}
 	err := checkDBCollection()
 	if err != nil {
 		panic(err.Error())
@@ -19,7 +25,7 @@ func main() {
 	e := echo.New()
 
 	e.Get("/disaster/getall", GetAllDisasters)
-	e.Get("/disaster/query", QueryDisasterReqVehicles)
+	e.Post("/disaster/query", QueryDisasterReqVehicles)
 	e.Post("/disaster/report", ReportDisaster)
 	e.Post("/disaster/setassemblypoint", SetAssemblyPoint)
 	e.Post("/disaster/finish", FinishDisaster)
@@ -33,7 +39,7 @@ func main() {
 	e.Post("/user/register", RegisterNewUser)
 	e.Post("/user/login", Login)
 
-	e.Run(standard.New(":1323"))
+	e.Run(standard.New(":" + *port))
 }
 
 func checkDBCollection() error {

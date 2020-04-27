@@ -45,8 +45,11 @@ func SetAssemblyPoint(c echo.Context) error {
 }
 
 func FinishDisaster(c echo.Context) error {
-  id := c.Form("id")
-  err := disaster.FinishDisaster(id)
+  info := make(map[string]string)
+  if err := c.MustBind(&info); err != nil {
+		return c.String(err.Error(), http.StatusInternalServerError)
+	}
+  err := disaster.FinishDisaster(info["id"])
   if err != nil {
 		fmt.Println(err.Error())
 		return c.String("finish failed", http.StatusInternalServerError)
@@ -66,8 +69,11 @@ func GetAllDisasters(c echo.Context) error {
 }
 
 func QueryDisasterReqVehicles(c echo.Context) error {
-  id := c.Form("id")
-  vehicles, err := disaster.QueryDisasterReqVehicles(id)
+  info := make(map[string]string)
+  if err := c.MustBind(&info); err != nil {
+		return c.String(err.Error(), http.StatusInternalServerError)
+	}
+  vehicles, err := disaster.QueryDisasterReqVehicles(info["id"])
   if err != nil {
 		fmt.Println(err.Error())
 		return c.String("get all disasters failed", http.StatusInternalServerError)

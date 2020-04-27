@@ -2,7 +2,7 @@ package googleMapAPI
 
 import (
   "googlemaps.github.io/maps"
-  "github.com/kr/pretty"
+  //"github.com/kr/pretty"
   "context"
   "fmt"
   "encoding/json"
@@ -12,6 +12,11 @@ import (
 const (
   googleApiKey = "AIzaSyDzxCwIwkSWHHoO0Kj_SS2FSfG9Ebkt-B8"
 )
+
+type LocPoint struct {
+  Lat float64 `json:"lat"`
+  Lng float64 `json:"Lng"`
+}
 
 func GetRoute(originLat float64, originLn float64, desLat float64, desLn float64) (string, error) {
   c, err := maps.NewClient(maps.WithAPIKey(googleApiKey))
@@ -28,8 +33,16 @@ func GetRoute(originLat float64, originLn float64, desLat float64, desLn float64
 	if err != nil || len(route) <= 0 {
     return "", errors.New(fmt.Sprintf("get route error: %s", err))
 	}
-	pretty.Println(route[0])
-  doc, err := json.Marshal(route[0])
+
+  lc := []LocPoint{}
+  for _, s := range route[0].Legs[0].Steps {
+    locP := LocPoint{
+      Lat: s.EndLocation.Lat,
+      Lng: s.EndLocation.Lng,
+    }
+    lc = append(lc, locP)
+  }
+  doc, err := json.Marshal(lc)
   if err != nil {
     return "", err
   }

@@ -105,8 +105,12 @@ func RequestRoutePlan(id string) (string, error){
   if err := json.Unmarshal([]byte(doc), &d); err != nil {
     return "", err
   }
+  reqRoute, err := json.Marshal(d[v[id].DisasterId].ReqRoute)
+  if err != nil {
+    return "", err
+  }
 
-  return fmt.Sprintf("{\"req_route\":%s,\"my_route\":%s}", d[v[id].DisasterId].ReqRoute, myRoute), nil
+  return fmt.Sprintf("{\"req_route\":%s,\"my_route\":%s}", reqRoute, myRoute), nil
 }
 
 func DispatchVehicle(dispatchInfo map[int]int, disasterId string) error {

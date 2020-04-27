@@ -5,7 +5,7 @@ import (
   "net/url"
   "io/ioutil"
   "fmt"
-
+  "googleMapAPI"
 )
 
 const (
@@ -39,7 +39,7 @@ type Disaster struct {
   EndTime int64 `json:"end_time"`
   AssemblyLn float64 `json:"assembly_ln"`
   AssemblyLat float64 `json:"assembly_lat"`
-  ReqRoute string `json:"req_route"`
+  ReqRoute []googleMapAPI.LocPoint `json:"req_route"`
 }
 
 type User struct {

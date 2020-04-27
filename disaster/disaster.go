@@ -35,11 +35,7 @@ func SetAssemblyPoint(id string, assemblyLat float64, assemblyLn float64 ) error
   if err != nil {
     return err
   }
-  routeStr, err := json.Marshal("\""+route+"\"")
-  if err != nil {
-    return err
-  }
-  updateStr := fmt.Sprintf("{\"req_route\":%s, \"assembly_lat\":%f, \"assembly_ln\":%f}", routeStr, assemblyLat, assemblyLn)
+  updateStr := fmt.Sprintf("{\"req_route\":%s, \"assembly_lat\":%f, \"assembly_ln\":%f}", route, assemblyLat, assemblyLn)
   return db.UpdateToDB(db.ColDisaster, id, updateStr)
 }
 
@@ -54,6 +50,9 @@ func FinishDisaster(id string) error {
   doc, err := db.QueryDB(db.ColVehicle, "{\"eq\": \""+ id +"\", \"in\": [\"disaster_id\"]}")
   if err != nil {
     return err
+  }
+  if doc == "{}" {
+    return nil
   }
   var vehicles map[string]db.Vehicle
   if err := json.Unmarshal([]byte(doc), &vehicles); err != nil {
